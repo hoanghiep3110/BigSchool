@@ -26,12 +26,12 @@ namespace BigSchool.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create( Course objCourse)
+        public ActionResult Create(Course objCourse)
         {
             BigSchoolContext context = new BigSchoolContext();
 
             ModelState.Remove("LectureId");
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 objCourse.ListCategory = context.Categories.ToList();
                 return View("Create", objCourse);
@@ -42,7 +42,7 @@ namespace BigSchool.Controllers
 
             context.Courses.Add(objCourse);
             context.SaveChanges();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult Attending()
@@ -51,7 +51,7 @@ namespace BigSchool.Controllers
             ApplicationUser currentUser = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
             var listAttendances = context.Attendances.Where(p => p.Attendee == currentUser.Id).ToList();
             var courses = new List<Course>();
-            foreach(Attendance temp in listAttendances)
+            foreach (Attendance temp in listAttendances)
             {
                 Course objCourse = temp.Course;
                 objCourse.LectureName = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(objCourse.LectureId).Name;
@@ -65,7 +65,7 @@ namespace BigSchool.Controllers
             ApplicationUser currentUser = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
             BigSchoolContext context = new BigSchoolContext();
             var courses = context.Courses.Where(c => c.LectureId == currentUser.Id && c.DateTime > DateTime.Now).ToList();
-            foreach(Course i in courses)
+            foreach (Course i in courses)
             {
                 i.LectureName = currentUser.Name;
             }
@@ -140,14 +140,12 @@ namespace BigSchool.Controllers
 
         public ActionResult LectureIamGoing()
         {
-            ApplicationUser currentUser =
-            System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>()
-            .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+            ApplicationUser currentUser =System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
             BigSchoolContext context = new BigSchoolContext();
             //danh sách giảng viên được theo dõi bởi người dùng (đăng nhập) hiện tại
-            var listFollwee = context.Followings.Where(p => p.FollowerId ==currentUser.Id).ToList();
+            var listFollwee = context.Followings.Where(p => p.FollowerId == currentUser.Id).ToList();
             //danh sách các khóa học mà người dùng đã đăng ký
-            var listAttendances = context.Attendances.Where(p => p.Attendee ==currentUser.Id).ToList();
+            var listAttendances = context.Attendances.Where(p => p.Attendee == currentUser.Id).ToList();
             var courses = new List<Course>();
             foreach (var course in listAttendances)
             {
@@ -164,6 +162,5 @@ namespace BigSchool.Controllers
             }
             return View(courses);
         }
-
     }
 }
